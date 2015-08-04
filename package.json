@@ -1,0 +1,25 @@
+{
+  "name": "oanda-stream",
+  "version": "1.0.0",
+  "description": "nodejs-api-streaming ================",
+  "main": "streaming.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oanda/nodejs-api-streaming.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oanda/nodejs-api-streaming/issues"
+  },
+  "homepage": "https://github.com/oanda/nodejs-api-streaming#readme",
+  "dependencies": {
+    "koa": "^0.21.0",
+    "koa-middlewares": "^4.0.0",
+    "node-uuid": "^1.4.3",
+    "oanda-adapter": "^0.1.11"
+  }
+}
