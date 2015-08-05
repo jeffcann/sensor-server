@@ -55,11 +55,11 @@ router.post('/v1/sensors/:id/readings', function *(next) {
             this.body.data = resp;
         } else {
             console.log("error adding new reading!");
-            body._status = {code:400, message:"err"};
+            this.body._status = {code:400, message:"err"};
         }
     } catch(err) {
         console.log("error adding new reading!", err);
-        body._status = {code:400, message:"err", err:err};
+        this.body._status = {code:400, message:"err", err:err};
     }
 
     yield next;
