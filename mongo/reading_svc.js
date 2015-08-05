@@ -39,9 +39,13 @@ module.exports = (function(host) {
         db.collection(collectionName).insertOne(obj, callback);
     };
 
-    function add(sensorId, value) {
+    function add(sensorId, values) {
         return Q.promise(function(resolve, reject) {
-            _insertDocument(db, {sensorId: sensorId, value:value, timestamp:new Date()}, "reading", function(err, resp) {
+            var doc = {sensorId: sensorId, timestamp: new Date()};
+
+            Object.keys(values).forEach(function(k) { doc[k] = values[k]; });
+
+            _insertDocument(db, doc, "reading", function(err, resp) {
                 if(err) {
                     reject(err);
                 } else {
