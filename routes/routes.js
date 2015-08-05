@@ -46,15 +46,23 @@ router.get('/v1/sensors/:id/readings', function *(next) {
 
 router.post('/v1/sensors/:id/readings', function *(next) {
 
-    var resp = yield ReadingSvc.add(this.params.id, this.query.value);
+    try {
+        var resp = yield ReadingSvc.add(this.params.id, this.query.value);
 
-    if(resp) {
-        console.log("added new reading!");
-        this.body._status = {code:201, message:"OK", status:"reading created"};
-        this.body.data = resp;
-    } else {
-        body._status = {code:400, message:"err"};
-    };
+        if(resp) {
+            console.log("added new reading!");
+            this.body._status = {code:201, message:"OK", status:"reading created"};
+            this.body.data = resp;
+        } else {
+            console.log("error adding new reading!");
+            body._status = {code:400, message:"err"};
+        }
+    } catch(err) {
+        console.log("error adding new reading!", err);
+        body._status = {code:400, message:"err", err:err};
+    }
+
+    yield next;
 });
 
 module.exports = router.routes();
