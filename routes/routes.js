@@ -47,7 +47,7 @@ router.get('/v1/sensors/:id/readings', function *(next) {
 router.post('/v1/sensors/:id/readings', function *(next) {
 
     try {
-        var resp = yield ReadingSvc.add(this.params.id, this.query.value);
+        var resp = yield ReadingSvc.add(this.params.id, this.query);
 
         if(resp) {
             console.log("added new reading!");
