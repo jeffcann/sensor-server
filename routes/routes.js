@@ -1,40 +1,60 @@
-module.exports = function(app) {
+var ReadingSvc = require("../mongo/reading_svc");
+var router = require('koa-router')();
 
-    var ReadingSvc = require("../mongo/reading_svc");
+ReadingSvc.connect(function() { console.log('connected'); }, "localhost");
 
-    var router = require('koa-route');
+router.get('/v1/sensors', function *(next) {
 
-    app.use(router.get('/v1/sensors', function *() {
-        this.body.data = [
-            {
-                sensorId: 123
-            },
-            {
-                sensorId: 124
-            }
-        ];
-    }));
+    console.log("getting all sensors!");
 
-    app.use(router.get('/v1/sensors/:id', function *(sensorId) {
-        this.body.data = {
-            sensorId: sensorId,
-            description: "Humidity",
-            unit: "%"
-        };
-    }));
+    this.body.data = [
+        {
+            sensorId: 123
+        },
+        {
+            sensorId: 124
+        }
+    ];
 
-    app.use(router.get('/v1/sensors/:id/readings', function *(sensorId) {
-        this.body.data = {
-            sensorId: sensorId,
-            readings: []
-        };
-    }));
+    yield next;
+});
 
-    app.use(router.post('/v1/sensors/:id/readings', function *(sensorId) {
-        this.body.data = {
-            sensorId: sensorId
-        };
-    }));
+router.get('/v1/sensors/:id', function *(next) {
 
+    console.log("getting sensor!");
 
-};
+    this.body.data = {
+        sensorId: this.params.id,
+        description: "Humidity",
+        unit: "%"
+    };
+
+    yield next;
+});
+
+router.get('/v1/sensors/:id/readings', function *(next) {
+
+    console.log("getting last reading!");
+
+    this.body.data = {
+        sensorId: this.params.id,
+        readings: []
+    };
+
+    yield next;
+});
+
+router.post('/v1/sensors/:id/readings', function *(next) {
+
+    var resp = yield ReadingSvc.add(this.params.id, this.query.value);
+
+    if(resp) {
+        console.log("added new reading!");
+        this.body._status = {code:201, message:"OK", status:"reading created"};
+        this.body.data = resp;
+    } else {
+        body._status = {code:400, message:"err"};
+    };
+});
+
+module.exports = router.routes();

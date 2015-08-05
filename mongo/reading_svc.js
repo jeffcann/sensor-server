@@ -1,5 +1,6 @@
 module.exports = (function(host) {
 
+    var Q = require("q");
     var MongoClient = require('mongodb').MongoClient;
     var assert = require('assert');
     var ObjectId = require('mongodb').ObjectID;
@@ -38,8 +39,16 @@ module.exports = (function(host) {
         db.collection(collectionName).insertOne(obj, callback);
     };
 
-    function add(sensorId, value, cb) {
-        _insertDocument(db, {sensorId: sensorId, value:value, timestamp:new Date()}, "reading", cb);
+    function add(sensorId, value) {
+        return Q.promise(function(resolve, reject) {
+            _insertDocument(db, {sensorId: sensorId, value:value, timestamp:new Date()}, "reading", function(err, resp) {
+                if(err) {
+                    reject(err);
+                } else {
+                    resolve(resp);
+                }
+            });
+        });
     }
 
     function find(sensorId, cb) {
